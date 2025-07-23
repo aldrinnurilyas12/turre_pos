@@ -62,8 +62,14 @@ class ItemsCategoryController extends Controller
     public function category_update(string $id, Request $request): View
     {
         $ctgid = $request->id;
-        $category_data = ItemsCategoryModel::where('id', $ctgid)->get();
+        $checking_category = ItemsCategoryModel::find($id);
+        $shop = app('App\Http\Controllers\Auth\AuthenticatedSessionController')->getUsers()->id;
 
+        $category_data = ItemsCategoryModel::where('id', $ctgid)->where('shop_id', $shop)->get();
+
+        if (!$checking_category && $category_data->isEmpty()) {
+            return view('errors.404');
+        }
         return view('layouts.main_pages.category.edit.category_edit', compact('category_data'));
     }
 

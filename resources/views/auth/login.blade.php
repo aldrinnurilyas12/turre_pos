@@ -33,23 +33,23 @@
                 @csrf
                 <div class="input-group">
                     <label for="">Masukan Email atau Nama Pengguna</label>
-                    <input class="form-input-text" type="text" value="{{old('login')}}" name="login" placeholder="Masukan Email Anda atau username" autocomplete="off">
-                    @if ($errors->get('login'))
-                    <div class="alert alert-warning">
-                        <x-input-error :messages="$errors->get('login')"/>
-                    </div>
-                    @endif     
+                    <input class="form-input-text" type="text" value="{{old('login')}}" name="login" placeholder="Masukan Email Anda atau username" autocomplete="off">   
                 </div>
 
                 <div class="input-group">
                     <label for="">Masukan Kata Sandi</label>
                     <input class="form-input-text" type="password" name="password"  placeholder="Masukan kata sandi" autocomplete="off">
-                    @if ($errors->get('password'))
-                    <div class="alert alert-warning">
-                        <x-input-error :messages="$errors->get('password')"/>
-                    </div>
-                    @endif  
+                    
                 </div>
+                @if ($errors->get('login'))
+                <div class="alert alert-warning">
+                    <x-input-error :messages="$errors->get('login')"/>
+                </div>
+                @elseif($errors->get('password'))
+                <div class="alert alert-warning">
+                    <x-input-error :messages="$errors->get('password')"/>
+                </div>
+                @endif
                
                 <div class="button-group">
                     <button type="submit">Login</button>

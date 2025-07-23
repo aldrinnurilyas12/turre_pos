@@ -58,6 +58,8 @@ class LoginRequest extends FormRequest
             ]);
         }
 
+        // Memeriksa apakah password yang dimasukkan benar
+
 
         // Memeriksa status aktif pengguna
         if ($user_available->is_active == null) {
@@ -65,15 +67,14 @@ class LoginRequest extends FormRequest
             throw ValidationException::withMessages([
                 'login' => 'Email belum diaktivasi'
             ]);
-        }
-
-        // Memeriksa apakah password yang dimasukkan benar
-        if (!Auth::attempt([$field => $login, 'password' => $this->input('password')], $this->boolean('remember'))) {
+        } elseif (!Auth::attempt([$field => $login, 'password' => $this->input('password')], $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());
             throw ValidationException::withMessages([
                 'password' => 'Password salah, coba lagi.'
             ]);
         }
+
+
 
         // Jika semua pemeriksaan berhasil, login pengguna
         Auth::login($user_available);

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ProductsModel extends Model
 {
@@ -23,4 +24,9 @@ class ProductsModel extends Model
         'created_by',
         'updated_by'
     ];
+
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(ItemsCategoryModel::class, 'id');
+    }
 }

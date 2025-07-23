@@ -22,16 +22,25 @@
               <div class="form-group">
                   <label><strong>Nama Diskon</strong></label>
                   <input type="text" name="discount_name" class="form-control" value="{{old('discount_name')}}" placeholder="Masukan nama diskon" autocomplete="off">
+                  <div class="alert alert-warning">
+                    <x-input-error :messages="$errors->get('discount_name')"/>
+                </div> 
               </div>
 
               <div class="form-group">
                 <label><strong>Kode Diskon</strong></label>
                 <input type="text" name="discount_code" class="form-control" value="{{old('discount_code')}}" placeholder="Masukan kode diskon" autocomplete="off">
+                <div class="alert alert-warning">
+                  <x-input-error :messages="$errors->get('discount_code')"/>
+                </div> 
               </div>
 
               <div class="form-group">
                 <label><strong>Jumlah Diskon (%)</strong></label>
                 <input type="text" name="discount_total" class="form-control" value="{{old('discount_total')}}" placeholder="Masukan total diskon" autocomplete="off">
+                <div class="alert alert-warning">
+                  <x-input-error :messages="$errors->get('shop_name')"/>
+                </div> 
               </div>
 
               <div class="form-group">

@@ -78,6 +78,9 @@
               <ul style="color: black;" class="list-unstyled">
                 <li class="text-muted ms-3"><span class="text-black me-4">Qty:</span> <br>{{$invoice->first()->quantity}} Item</li>
                 <li class="text-muted ms-3"><span class="text-black me-4">SubTotal:</span> <br>{{"Rp." . number_format($invoice->first()->total)}}</li>
+                <hr>
+                {{-- <li class="text-muted ms-3"><span class="text-black me-4">Bayar:</span> <br>{{"Rp." . number_format($invoice->first()->amount)}}</li>
+                <li class="text-muted ms-3"><span class="text-black me-4">Kembalian:</span> <br>{{"Rp." . number_format($invoice->first()->payment_changes)}}</li> --}}
                 <li class="text-muted ms-3 mt-2"><span class="text-black me-4">Pay Method:</span>
                     <br>
                     @if($invoice->first()->payment_method)

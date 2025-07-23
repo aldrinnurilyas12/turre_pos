@@ -19,6 +19,7 @@ class ProductsController extends Controller
         $shop = app('App\Http\Controllers\Auth\AuthenticatedSessionController')->getUsers()->id;
         $products = DB::table('v_products')->where('shop_id', $shop)->get();
 
+
         return view('layouts.main_pages.products.products', compact('products'));
     }
 
@@ -93,17 +94,19 @@ class ProductsController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function product_update_layout(string $id, Request $request)
+    public function product_update_layout(Request $request, $id)
     {
         $authenticatedUser = app('App\Http\Controllers\Auth\AuthenticatedSessionController')->getUsers();
         $shop = app('App\Http\Controllers\Auth\AuthenticatedSessionController')->getUsers()->shop_name; // Ganti dengan logika yang sesuai untuk mendapatkan shop_name lainnya
-
-        if ($authenticatedUser->shop_name !== $shop) {
-            abort(403, 'Ooops unauthorized shop');
-        }
         $products = DB::table('v_products')->where('id', $request->id)->where('shop_name', $shop)->get();
         $product_category = DB::table('product_category')->get();
-        return view('layouts.main_pages.products.edit.products_edit', compact('products', 'product_category'));
+        $checking_products = DB::table('v_products')->find($id);
+
+        if ($checking_products) {
+            return view('layouts.main_pages.products.edit.products_edit', compact('products', 'product_category'));
+        } else {
+            return response()->view('errors.404', [], 404);
+        }
     }
 
     /**

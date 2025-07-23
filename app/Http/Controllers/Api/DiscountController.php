@@ -35,6 +35,12 @@ class DiscountController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'discount_name' => 'required',
+            'discount_code' => 'required|max:16',
+            'discount_total' => 'required'
+        ]);
+
         $shop = app('App\Http\Controllers\Auth\AuthenticatedSessionController')->getUsers()->id;
         $shop_name = app('App\Http\Controllers\Auth\AuthenticatedSessionController')->getUsers()->shop_name;
 
