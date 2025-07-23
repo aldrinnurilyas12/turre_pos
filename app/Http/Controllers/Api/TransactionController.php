@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\ItemsCategoryModel;
+use App\Models\ProductsModel;
 use App\Models\TransactionDetail;
 use App\Models\TransactionDetailInformationModel;
 use App\Models\TransactionModel;
@@ -52,9 +54,14 @@ class TransactionController extends Controller
     public function transaction_create_layout(Request $request): View
     {
         $shop = app('App\Http\Controllers\Auth\AuthenticatedSessionController')->getUsers()->id;
-        $discount = DB::table('discounts')->where('shop_id', $shop)->get();
         $category_data = DB::table('product_category')->where('shop_id', $shop)->get();
+        $discount = DB::table('discounts')->where('shop_id', $shop)->get();
         $all_products =  DB::table('v_products')->where('shop_id', $shop)->paginate(8);
+
+        $itemProducts = ProductsModel::with('category')->where('shop_id', auth()->user()->id)->get();
+
+        // dd($itemProducts);
+
 
         // section cart:
         $cart_value = Session::get('cart', []);
@@ -84,7 +91,9 @@ class TransactionController extends Controller
         foreach ($cart_value as $item) {
             $grand_total += $item['price'];
         }
-        return view('layouts.main_pages.transactions.create.transaction_create', compact('total_products', 'grand_total', 'price_total', 'qty', 'cart_value', 'all_products', 'category_data', 'discount'));
+
+
+        return view('layouts.main_pages.transactions.create.transaction_create', compact('total_products', 'grand_total', 'price_total', 'qty', 'cart_value', 'all_products', 'category_data', 'discount', 'itemProducts'));
     }
 
     /**
@@ -94,12 +103,14 @@ class TransactionController extends Controller
     {
         $request->validate([
             'product_id' => 'required|array',
-            'product_id.*' => 'exists:products,id'
+            'product_id.*' => 'exists:products,id',
+            'quantity_per_product' => 'required|array'
         ]);
 
-        $qtyProduct = $request->input('quantity_per_product');
-        $productIds = $request->input('product_id');
+        $qtyProduct = (array) $request->input('quantity_per_product', []);
+        $productIds = (array) $request->input('product_id', []);
 
+        $product = DB::table('products')->whereIn('id', $productIds)->get();
         $uuid = bin2hex(random_bytes(16));
         $uuid_transaction = substr($uuid, 0, 8) . '-' . substr($uuid, 8, 4) . '-' . substr($uuid, 8, 6);
 
@@ -115,14 +126,20 @@ class TransactionController extends Controller
             'created_by' => app('App\Http\Controllers\Auth\AuthenticatedSessionController')->getUsers()->shop_name . '-' . app('App\Http\Controllers\Auth\AuthenticatedSessionController')->getUsers()->owner_name
         ]);
 
+        foreach ($productIds as $key => $productId) {
+            $qtyprd = (int) [$qtyProduct];
+            // dd($productIds, $qtyprd);
 
-        foreach ($productIds as $productId) {
+            // foreach ($qtyProduct as $qtyprd) {
             TransactionDetail::create([
                 'transaction_id' => $main_transaction->id,
                 'product_id' => $productId,
-                'quantity_per_product' => $qtyProduct,
+                'quantity_per_product' => $qtyprd,
                 'created_by' => app('App\Http\Controllers\Auth\AuthenticatedSessionController')->getUsers()->shop_name . '-' . app('App\Http\Controllers\Auth\AuthenticatedSessionController')->getUsers()->owner_name
             ]);
+
+
+            // }
         }
 
         TransactionDetailInformationModel::create([
@@ -131,12 +148,28 @@ class TransactionController extends Controller
             'promo_code' => $request->promo_code,
             'amount' => $request->amount,
             'payment_changes' => $request->payment_changes,
-            'payment_total' => $request->payment_total,
+            'payment_total' => $request->total,
             'customer' => $request->customer,
             'email' => $request->email,
             'created_by' => app('App\Http\Controllers\Auth\AuthenticatedSessionController')->getUsers()->shop_name . '-' . app('App\Http\Controllers\Auth\AuthenticatedSessionController')->getUsers()->owner_name
         ]);
 
+        // if ($product->isNotEmpty()) {
+        //     foreach ($product as $prd) {
+        //         $newstock = $prd->stock - $qtyProduct;
+
+        //         if ($newstock >= 0) {
+        //             DB::table('products')->whereIn('id', $prd->id)->update([
+        //                 'stock' => $newstock
+        //             ]);
+        //         } else {
+        //             return response()->json(['message' => 'Stok limited'], 400);
+        //         }
+        //     }
+        // } else {
+
+        //     return response()->json(['message' => 'Product not found'], 400);
+        // }
         Session::forget('cart');
         session()->flash('message_success', 'Transaksi berhasil!');
         return redirect()->route('transaction_create');
