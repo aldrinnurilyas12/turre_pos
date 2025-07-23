@@ -52,8 +52,8 @@ class TransactionController extends Controller
     public function transaction_create_layout(Request $request): View
     {
         $shop = app('App\Http\Controllers\Auth\AuthenticatedSessionController')->getUsers()->id;
-        $category_data = DB::table('product_category')->where('shop_id', $shop)->get();
         $discount = DB::table('discounts')->where('shop_id', $shop)->get();
+        $category_data = DB::table('product_category')->where('shop_id', $shop)->get();
         $all_products =  DB::table('v_products')->where('shop_id', $shop)->paginate(8);
 
         // section cart:

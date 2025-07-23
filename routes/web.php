@@ -25,7 +25,7 @@ Route::middleware('guest')->group(function () {
 
 
 Route::middleware('auth')->group(function () {
-    Route::get('dahsboard_main', [HomepageController::class, 'index'])->name('dashboard_main');
+    Route::get('dashboard_main', [HomepageController::class, 'index'])->name('dashboard_main');
     Route::get('profile_information', [ProfileController::class, 'user_profile'])->name('profile_information');
     Route::put('profile_update/{id}', [ProfileController::class, 'update'])->name('profile_update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

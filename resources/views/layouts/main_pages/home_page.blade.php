@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet"/>
-    <link href="{{asset('assets/front_end/css/styles.css')}}" rel="stylesheet" />
-    <title>Document</title>
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
+    <link href="{{ asset('assets/front_end/css/styles.css') }}" rel="stylesheet" />
+    <title>Dashboard</title>
 </head>
+
 <body class="sb-nav-fixed">
     @include('layouts.component_admin.navbar.navbar')
 
@@ -19,7 +21,7 @@
                     <h1 class="mt-4">Dashboard</h1>
                     <ol class="breadcrumb mb-4">
                         <li class="breadcrumb-item active">Welcome back, &nbsp;</li>
-                        {{app('App\Http\Controllers\Auth\AuthenticatedSessionController')->getUsers()->shop_name}}
+                        {{ app('App\Http\Controllers\Auth\AuthenticatedSessionController')->getUsers()->shop_name }}
                     </ol>
                     <div class="row">
                         <div class="col-xl-3 col-md-6">
@@ -59,7 +61,7 @@
                             </div>
                         </div>
                     </div>
-                   
+
                 </div>
             </main>
         </div>
@@ -69,4 +71,5 @@
 
 
 </body>
+
 </html>
